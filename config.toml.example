@@ -1,0 +1,55 @@
+# Шаблон конфига pbot. Скопируй в config.toml и заполни.
+# bot_token — обязательное. Все остальные [sections] имеют разумные дефолты.
+
+bot_token = "123456:ABC..."           # @BotFather
+owner_id = 0                          # твой user_id — для LLM-ошибок в ЛС. 0 = отключить.
+
+[llm]
+base_url = "https://api.openai.com/v1"
+api_key = "sk-..."
+model = "gpt-4o-mini"
+max_tokens = 1500
+supports_json_mode = true             # false для ollama без json_object
+supports_vision = true                # false → картинки игнорируются
+temperature = 0.8
+request_timeout_sec = 60
+retry_attempts = 2
+
+# Fallback chain: каждый следующий элемент пробуется если primary
+# (или предыдущий fallback) не смогли дать валидный JSON.
+# Любое поле можно переопределить; остальные наследуются от [llm].
+# Полезно для: разные провайдеры, разные api-ключи (когда один закончился
+# по лимитам), разные модели для разных типов задач.
+#
+# [[llm.fallbacks]]
+# base_url = "https://openrouter.ai/api/v1"
+# api_key = "sk-or-..."
+# model = "anthropic/claude-3-haiku"
+# temperature = 0.3
+#
+# [[llm.fallbacks]]
+# model = "gpt-4o-mini"  # другая модель, тот же base_url/api_key
+
+[game]
+context_window_messages = 500
+max_context_chars = 48000             # ~12k токенов
+min_messages = 20
+force_limit_per_day = 1
+alias_cooldown_hours = 72
+winners_lookback_days = 7
+day_tz_offset_hours = 0               # +3 для МСК-дня
+max_profile_age_days = 7
+max_vision_images_per_message = 5
+vision_image_max_side = 512
+
+[sponsor]
+text = ""                             # пусто = выключено
+probability = 1.0
+
+[system_prompt]
+text = ""                             # пусто → дефолт из prompt.py
+use_few_shot_examples = true          # подгрузить examples.txt
+
+[vision]
+download_timeout_sec = 30
+skip_animated = true                  # .tgs и анимированные → [skipped]
